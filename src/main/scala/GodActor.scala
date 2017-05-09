@@ -18,6 +18,7 @@ class GodActor() extends Actor {
   import GodActor._
 
   val world = context.actorOf(WorldActor.props(self), name = "world-actor")
+  val printer = context.actorOf(PrintActor.props(), name = "print-actor")
 
   def receive = init(Set.empty)
 
@@ -34,6 +35,7 @@ class GodActor() extends Actor {
 
   def running(rate: Long, isRunning: Boolean): Receive = {
     case WorldActor.Done(livingCells) =>
+      printer ! PrintActor.PrintCells(livingCells)
       Thread.sleep(rate)
       world ! WorldActor.MakeStep
   }
